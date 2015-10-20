@@ -82,6 +82,14 @@ namespace GestureDemo
             // Move an element
             var elementDragGesture = new UIPanGestureRecognizer(HandlePan);
             _canvasView.AddGestureRecognizer(elementDragGesture);
+
+            elementDragGesture.ShouldReceiveTouch = (g, touch) =>
+            {
+                var locationInCanvas = touch.LocationInView(_canvasView);
+                var touchedElement = ElementUnderPoint(locationInCanvas);
+
+                return touchedElement != null && IsElementSelected(touchedElement);
+            };
         }
 
         private void HandleTap(UITapGestureRecognizer gesture)
