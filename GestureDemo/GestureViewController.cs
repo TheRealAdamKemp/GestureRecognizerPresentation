@@ -101,6 +101,8 @@ namespace GestureDemo
 
                 return touchedElement != null && !IsElementSelected(touchedElement);
             };
+
+            selectLongPressGesture.ShouldRecognizeSimultaneously = (g1, g2) => g2 == elementDragGesture;
         }
 
         private void HandleTap(UITapGestureRecognizer gesture)
