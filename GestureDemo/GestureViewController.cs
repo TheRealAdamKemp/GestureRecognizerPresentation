@@ -90,6 +90,17 @@ namespace GestureDemo
 
                 return touchedElement != null && IsElementSelected(touchedElement);
             };
+
+            var selectLongPressGesture = new UILongPressGestureRecognizer(HandleLongPress) { MinimumPressDuration = 0.1 };
+            _canvasView.AddGestureRecognizer(selectLongPressGesture);
+
+            selectLongPressGesture.ShouldReceiveTouch = (g, touch) =>
+            {
+                var locationInCanvas = touch.LocationInView(_canvasView);
+                var touchedElement = ElementUnderPoint(locationInCanvas);
+
+                return touchedElement != null && !IsElementSelected(touchedElement);
+            };
         }
 
         private void HandleTap(UITapGestureRecognizer gesture)
@@ -156,6 +167,18 @@ namespace GestureDemo
             foreach (var view in _selectedElements)
             {
                 view.Transform = identityTransform;
+            }
+        }
+
+        private void HandleLongPress(UILongPressGestureRecognizer gesture)
+        {
+            if (gesture.State == UIGestureRecognizerState.Began)
+            {
+                var locationInCanvas = gesture.LocationInView(_canvasView);
+                var touchedElement = ElementUnderPoint(locationInCanvas);
+
+                ClearSelection();
+                SetElementSelected(touchedElement, selected: true);
             }
         }
 
