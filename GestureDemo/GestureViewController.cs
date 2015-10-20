@@ -30,7 +30,7 @@ namespace GestureDemo
         #region Gesture state fields
 
         private readonly HashSet<UIView> _selectedElements = new HashSet<UIView>();
-        private UIView _elementBeingTouched;
+        private bool _panShouldBegin;
 
         #endregion
 
@@ -87,7 +87,7 @@ namespace GestureDemo
             var elementDragGesture = new UIPanGestureRecognizer(HandlePan);
             _canvasView.AddGestureRecognizer(elementDragGesture);
 
-            elementDragGesture.ShouldBegin = g => _elementBeingTouched != null;
+            elementDragGesture.ShouldBegin = g => _panShouldBegin;
 
             var selectLongPressGesture = new UILongPressGestureRecognizer(HandleLongPress) { MinimumPressDuration = 0.1 };
             _canvasView.AddGestureRecognizer(selectLongPressGesture);
@@ -123,12 +123,14 @@ namespace GestureDemo
         private void HandleTouchDownBegan(UILongPressGestureRecognizer gesture)
         {
             var locationInCanvas = gesture.LocationInView(_canvasView);
-            _elementBeingTouched = ElementUnderPoint(locationInCanvas);
+            var touchedElement = ElementUnderPoint(locationInCanvas);
+
+            _panShouldBegin = touchedElement != null && IsElementSelected(touchedElement);
         }
 
         private void CleanupAfterTouchDown()
         {
-            _elementBeingTouched = null;
+            _panShouldBegin = false;
         }
 
         private void HandleTap(UITapGestureRecognizer gesture)
@@ -207,7 +209,7 @@ namespace GestureDemo
 
                 ClearSelection();
                 SetElementSelected(touchedElement, selected: true);
-                _elementBeingTouched = touchedElement;
+                _panShouldBegin = true;
             }
         }
 
