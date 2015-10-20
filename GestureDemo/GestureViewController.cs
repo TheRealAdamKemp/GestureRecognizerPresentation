@@ -83,9 +83,9 @@ namespace GestureDemo
             var elementDragGesture = new UIPanGestureRecognizer(HandlePan);
             _canvasView.AddGestureRecognizer(elementDragGesture);
 
-            elementDragGesture.ShouldReceiveTouch = (g, touch) =>
+            elementDragGesture.ShouldBegin = g =>
             {
-                var locationInCanvas = touch.LocationInView(_canvasView);
+                var locationInCanvas = g.LocationInView(_canvasView);
                 var touchedElement = ElementUnderPoint(locationInCanvas);
 
                 return touchedElement != null && IsElementSelected(touchedElement);
