@@ -30,6 +30,7 @@ namespace GestureDemo
         #region Gesture state fields
 
         private readonly HashSet<UIView> _selectedElements = new HashSet<UIView>();
+        private UIView _elementBeingTouched;
 
         #endregion
 
@@ -75,6 +76,9 @@ namespace GestureDemo
 
         private void AddGestures()
         {
+            var touchDownGesture = new UILongPressGestureRecognizer(HandleTouchDown) { MinimumPressDuration = 0 };
+            _canvasView.AddGestureRecognizer(touchDownGesture);
+
             // Tap to select
             var tapGesture = new UITapGestureRecognizer(HandleTap);
             _canvasView.AddGestureRecognizer(tapGesture);
@@ -83,13 +87,7 @@ namespace GestureDemo
             var elementDragGesture = new UIPanGestureRecognizer(HandlePan);
             _canvasView.AddGestureRecognizer(elementDragGesture);
 
-            elementDragGesture.ShouldBegin = g =>
-            {
-                var locationInCanvas = g.LocationInView(_canvasView);
-                var touchedElement = ElementUnderPoint(locationInCanvas);
-
-                return touchedElement != null && IsElementSelected(touchedElement);
-            };
+            elementDragGesture.ShouldBegin = g => _elementBeingTouched != null;
 
             var selectLongPressGesture = new UILongPressGestureRecognizer(HandleLongPress) { MinimumPressDuration = 0.1 };
             _canvasView.AddGestureRecognizer(selectLongPressGesture);
@@ -103,6 +101,34 @@ namespace GestureDemo
             };
 
             selectLongPressGesture.ShouldRecognizeSimultaneously = (g1, g2) => g2 == elementDragGesture;
+            touchDownGesture.ShouldRecognizeSimultaneously = (g1, g2) => true;
+        }
+
+        private void HandleTouchDown(UILongPressGestureRecognizer gesture)
+        {
+            switch (gesture.State)
+            {
+                case UIGestureRecognizerState.Began:
+                    HandleTouchDownBegan(gesture);
+                    break;
+                case UIGestureRecognizerState.Changed:
+                    break;
+                case UIGestureRecognizerState.Ended:
+                case UIGestureRecognizerState.Cancelled:
+                    CleanupAfterTouchDown();
+                    break;
+            }
+        }
+
+        private void HandleTouchDownBegan(UILongPressGestureRecognizer gesture)
+        {
+            var locationInCanvas = gesture.LocationInView(_canvasView);
+            _elementBeingTouched = ElementUnderPoint(locationInCanvas);
+        }
+
+        private void CleanupAfterTouchDown()
+        {
+            _elementBeingTouched = null;
         }
 
         private void HandleTap(UITapGestureRecognizer gesture)
@@ -181,6 +207,7 @@ namespace GestureDemo
 
                 ClearSelection();
                 SetElementSelected(touchedElement, selected: true);
+                _elementBeingTouched = touchedElement;
             }
         }
 
