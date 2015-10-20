@@ -75,6 +75,23 @@ namespace GestureDemo
 
         private void AddGestures()
         {
+            // Tap to select
+            var tapGesture = new UITapGestureRecognizer(HandleTap);
+            _canvasView.AddGestureRecognizer(tapGesture);
+        }
+
+        private void HandleTap(UITapGestureRecognizer gesture)
+        {
+            var locationInCanvas = gesture.LocationInView(_canvasView);
+            var touchedElement = ElementUnderPoint(locationInCanvas);
+            bool didTouchElement = touchedElement != null;
+
+            ClearSelection();
+
+            if (didTouchElement)
+            {
+                SetElementSelected(touchedElement, selected: true);
+            }
         }
 
         #endregion
