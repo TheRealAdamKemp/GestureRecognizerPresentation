@@ -78,6 +78,10 @@ namespace GestureDemo
             // Tap to select
             var tapGesture = new UITapGestureRecognizer(HandleTap);
             _canvasView.AddGestureRecognizer(tapGesture);
+
+            // Move an element
+            var elementDragGesture = new UIPanGestureRecognizer(HandlePan);
+            _canvasView.AddGestureRecognizer(elementDragGesture);
         }
 
         private void HandleTap(UITapGestureRecognizer gesture)
@@ -91,6 +95,59 @@ namespace GestureDemo
             if (didTouchElement)
             {
                 SetElementSelected(touchedElement, selected: true);
+            }
+        }
+
+        private void HandlePan(UIPanGestureRecognizer gesture)
+        {
+            switch (gesture.State)
+            {
+                case UIGestureRecognizerState.Began:
+                    break;
+                case UIGestureRecognizerState.Changed:
+                    HandlePanChanged(gesture);
+                    break;
+                case UIGestureRecognizerState.Ended:
+                    HandlePanEnded(gesture);
+                    CleanupAfterPan();
+                    break;
+                case UIGestureRecognizerState.Cancelled:
+                    CleanupAfterPan();
+                    break;
+            }
+        }
+
+        private void HandlePanChanged(UIPanGestureRecognizer gesture)
+        {
+            var translation = gesture.TranslationInView(_canvasView);
+            var transform = CGAffineTransform.MakeTranslation(translation.X, translation.Y);
+
+            foreach (var view in _selectedElements)
+            {
+                view.Transform = transform;
+            }
+        }
+
+        private void HandlePanEnded(UIPanGestureRecognizer gesture)
+        {
+            var translation = gesture.TranslationInView(_canvasView);
+
+            foreach (var view in _selectedElements)
+            {
+                var center = view.Center;
+                center.X += translation.X;
+                center.Y += translation.Y;
+
+                view.Center = center;
+            }
+        }
+
+        private void CleanupAfterPan()
+        {
+            var identityTransform = CGAffineTransform.MakeIdentity();
+            foreach (var view in _selectedElements)
+            {
+                view.Transform = identityTransform;
             }
         }
 
