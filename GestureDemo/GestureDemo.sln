@@ -1,0 +1,23 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GestureDemo", "GestureDemo.csproj", "{99E5B918-4D27-4163-935E-DBA575F7F34E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|iPhoneSimulator = Debug|iPhoneSimulator
+		Release|iPhone = Release|iPhone
+		Release|iPhoneSimulator = Release|iPhoneSimulator
+		Debug|iPhone = Debug|iPhone
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{99E5B918-4D27-4163-935E-DBA575F7F34E}.Debug|iPhone.ActiveCfg = Debug|iPhone
+		{99E5B918-4D27-4163-935E-DBA575F7F34E}.Debug|iPhone.Build.0 = Debug|iPhone
+		{99E5B918-4D27-4163-935E-DBA575F7F34E}.Debug|iPhoneSimulator.ActiveCfg = Debug|iPhoneSimulator
+		{99E5B918-4D27-4163-935E-DBA575F7F34E}.Debug|iPhoneSimulator.Build.0 = Debug|iPhoneSimulator
+		{99E5B918-4D27-4163-935E-DBA575F7F34E}.Release|iPhone.ActiveCfg = Release|iPhone
+		{99E5B918-4D27-4163-935E-DBA575F7F34E}.Release|iPhone.Build.0 = Release|iPhone
+		{99E5B918-4D27-4163-935E-DBA575F7F34E}.Release|iPhoneSimulator.ActiveCfg = Release|iPhoneSimulator
+		{99E5B918-4D27-4163-935E-DBA575F7F34E}.Release|iPhoneSimulator.Build.0 = Release|iPhoneSimulator
+	EndGlobalSection
+EndGlobal
